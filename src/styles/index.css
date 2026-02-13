@@ -872,6 +872,18 @@ input[type="range"] { accent-color: #5a8fd4; }
   color: #d4b856 !important;
 }
 
+.bestiary-btn {
+  background: rgba(128, 96, 176, 0.12) !important;
+  border-color: rgba(128, 96, 176, 0.25) !important;
+  color: #b080d4 !important;
+  font-weight: 600;
+}
+
+.bestiary-btn:hover {
+  background: rgba(128, 96, 176, 0.2) !important;
+  color: #c8a0f0 !important;
+}
+
 /* ─── COHERENCE PANEL ─── */
 .coherence-panel {
   margin-top: 16px;

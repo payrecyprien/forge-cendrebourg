@@ -87,7 +87,7 @@ function CoherencePanel({ coherence, isChecking }) {
   );
 }
 
-export default function QuestDisplay({ quest, meta, coherence, isChecking, onExportJSON, onAcceptQuest, onRegenerate, campaignLength }) {
+export default function QuestDisplay({ quest, meta, coherence, isChecking, onExportJSON, onAcceptQuest, onRegenerate, onSendToBestiaire, campaignLength }) {
   if (!quest) return null;
 
   return (
@@ -244,6 +244,9 @@ export default function QuestDisplay({ quest, meta, coherence, isChecking, onExp
           </button>
           <button className="action-btn accept-btn" onClick={onAcceptQuest} title="Accepter et passer à la suite">
             ✅ Accepter la quête
+          </button>
+          <button className="action-btn bestiary-btn" onClick={onSendToBestiaire} title="Générer des créatures pour cette quête">
+            🐺 Peupler de créatures →
           </button>
         </div>
       </div>

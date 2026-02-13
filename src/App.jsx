@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { buildQuestPrompt } from "./data/prompts";
 import { PLAYER_CLASSES, WORLD, FACTIONS, LOCATIONS, KEY_NPCS } from "./data/world";
 import { generateQuest, checkCoherence } from "./utils/api";
+import { openBestiaire } from "./utils/context";
 import PlayerConfig from "./components/PlayerConfig";
 import QuestDisplay from "./components/QuestDisplay";
 
@@ -223,6 +224,7 @@ export default function App() {
               onExportJSON={handleExportJSON}
               onAcceptQuest={handleAcceptQuest}
               onRegenerate={handleGenerate}
+              onSendToBestiaire={() => openBestiaire(quest)}
               campaignLength={campaign.length}
             />
           ) : (
