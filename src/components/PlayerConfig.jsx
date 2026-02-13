@@ -1,6 +1,6 @@
 import { PLAYER_CLASSES, QUEST_TYPES, FACTIONS, COMPLETED_QUESTS_EXAMPLES } from "../data/world";
 
-export default function PlayerConfig({ config, onConfigChange, onGenerate, isLoading }) {
+export default function PlayerConfig({ config, onConfigChange, onGenerate, isLoading, campaign }) {
   const update = (key, value) => onConfigChange({ ...config, [key]: value });
 
   const toggleCompletedQuest = (quest) => {
@@ -133,13 +133,28 @@ export default function PlayerConfig({ config, onConfigChange, onGenerate, isLoa
         </div>
       </div>
 
+      {/* Campaign progress */}
+      {campaign && campaign.length > 0 && (
+        <>
+          <div className="section-title">Campagne en cours</div>
+          <div className="campaign-list">
+            {campaign.map((q, i) => (
+              <div key={i} className="campaign-quest-item">
+                <span className="campaign-quest-num">#{i + 1}</span>
+                <span className="campaign-quest-name">{q.title}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Generate button */}
       <button
         className="generate-btn"
         onClick={onGenerate}
         disabled={isLoading}
       >
-        {isLoading ? "⏳ Génération en cours..." : "🗺️ Forger une quête"}
+        {isLoading ? "⏳ Génération en cours..." : campaign && campaign.length > 0 ? `🗺️ Forger la quête ${campaign.length + 1}` : "🗺️ Forger une quête"}
       </button>
     </aside>
   );

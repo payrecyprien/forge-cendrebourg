@@ -24,14 +24,82 @@ function formatFactionImpact(impact) {
   return { isPositive, label: `${isPositive ? "+" : "−"} ${factionName}` };
 }
 
-export default function QuestDisplay({ quest, meta, onExportJSON }) {
+function getScoreColor(score) {
+  if (score >= 8) return "#70c070";
+  if (score >= 5) return "#d4b856";
+  return "#e07070";
+}
+
+function CoherencePanel({ coherence, isChecking }) {
+  if (isChecking) {
+    return (
+      <div className="coherence-panel checking">
+        <div className="coherence-header">
+          <span className="coherence-icon">🔍</span>
+          <span className="coherence-title">Vérification de cohérence...</span>
+        </div>
+        <div className="coherence-loading">Analyse via Haiku en cours</div>
+      </div>
+    );
+  }
+
+  if (!coherence) return null;
+
+  const scoreColor = coherence.score ? getScoreColor(coherence.score) : "#8a9bb5";
+
+  return (
+    <div className="coherence-panel">
+      <div className="coherence-header">
+        <span className="coherence-icon">🔍</span>
+        <span className="coherence-title">Cohérence Lore</span>
+        {coherence.score && (
+          <span className="coherence-score" style={{ color: scoreColor, borderColor: scoreColor + "40" }}>
+            {coherence.score}/10
+          </span>
+        )}
+        <span className="coherence-verdict" style={{ color: scoreColor }}>
+          {coherence.verdict}
+        </span>
+      </div>
+
+      {coherence.strengths?.length > 0 && (
+        <div className="coherence-list">
+          {coherence.strengths.map((s, i) => (
+            <div key={i} className="coherence-item strength">✓ {s}</div>
+          ))}
+        </div>
+      )}
+
+      {coherence.issues?.length > 0 && (
+        <div className="coherence-list">
+          {coherence.issues.map((issue, i) => (
+            <div key={i} className="coherence-item issue">⚠ {issue}</div>
+          ))}
+        </div>
+      )}
+
+      {coherence.meta && (
+        <div className="coherence-meta">
+          Haiku · {coherence.meta.latency}ms · {coherence.meta.totalTokens} tok · ${coherence.meta.cost.toFixed(4)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function QuestDisplay({ quest, meta, coherence, isChecking, onExportJSON, onAcceptQuest, onRegenerate, campaignLength }) {
   if (!quest) return null;
 
   return (
     <div className="quest-card">
       {/* Header */}
       <div className="quest-header">
-        <span className="quest-type-badge">{getQuestTypeLabel(quest.type)}</span>
+        <div className="quest-header-top">
+          <span className="quest-type-badge">{getQuestTypeLabel(quest.type)}</span>
+          {campaignLength > 0 && (
+            <span className="quest-chain-badge">Chapitre {campaignLength + 1}</span>
+          )}
+        </div>
         <h2 className="quest-title">{quest.title}</h2>
         <p className="quest-description">{quest.description}</p>
         <div className="quest-meta">
@@ -157,6 +225,9 @@ export default function QuestDisplay({ quest, meta, onExportJSON }) {
             </div>
           </div>
         )}
+
+        {/* Coherence check */}
+        <CoherencePanel coherence={coherence} isChecking={isChecking} />
       </div>
 
       {/* Footer */}
@@ -165,8 +236,14 @@ export default function QuestDisplay({ quest, meta, onExportJSON }) {
           🔗 {quest.lore_connection}
         </div>
         <div className="quest-actions">
-          <button className="action-btn" onClick={onExportJSON}>
-            📋 Export JSON
+          <button className="action-btn" onClick={onExportJSON} title="Télécharger le JSON">
+            📋 JSON
+          </button>
+          <button className="action-btn reject-btn" onClick={onRegenerate} title="Régénérer une autre quête">
+            🔄 Autre quête
+          </button>
+          <button className="action-btn accept-btn" onClick={onAcceptQuest} title="Accepter et passer à la suite">
+            ✅ Accepter la quête
           </button>
         </div>
       </div>
